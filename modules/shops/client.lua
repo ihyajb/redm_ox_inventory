@@ -2,7 +2,20 @@ if not lib then return end
 
 local shopTypes = {}
 local shops = {}
-local createBlip = require 'modules.utils.client'.CreateBlip
+-- local createBlip = require 'modules.utils.client'.CreateBlip
+
+local function CreatePrompt(name, group)
+    local PedPrompt = UiPromptRegisterBegin()
+    UiPromptSetControlAction(PedPrompt, 0xE3BF959B)
+    UiPromptSetText(PedPrompt, CreateVarString(10, "LITERAL_STRING", name))
+    UiPromptSetEnabled(PedPrompt, true)
+    UiPromptSetVisible(PedPrompt, true)
+    UiPromptSetStandardMode(PedPrompt, true)
+    -- UiPromptSetHoldMode(PedPrompt, 1000)
+    UiPromptSetGroup(PedPrompt, group, 0)
+    UiPromptRegisterEnd(PedPrompt)
+    return PedPrompt
+end
 
 for shopType, shopData in pairs(lib.load('data.shops') or {} --[[@as table<string, OxShop>]]) do
 	local shop = {
@@ -13,12 +26,12 @@ for shopType, shopData in pairs(lib.load('data.shops') or {} --[[@as table<strin
         icon = shopData.icon
 	}
 
-	if shared.target then
+	-- if shared.target then
 		shop.model = shopData.model
 		shop.targets = shopData.targets
-	else
-		shop.locations = shopData.locations
-	end
+	-- else
+	-- 	shop.locations = shopData.locations
+	-- end
 
 	shopTypes[shopType] = shop
 	local blip = shop.blip
@@ -30,33 +43,54 @@ for shopType, shopData in pairs(lib.load('data.shops') or {} --[[@as table<strin
 end
 
 ---@param point CPoint
+local function nearby(point)
+	local retval, entity = GetPlayerTargetEntity(cache.playerId)
+	if retval and entity == point.entity and point.prompt then
+		if UiPromptHasStandardModeCompleted(point.prompt, 0) then
+			client.openInventory('shop', { id = point.invId, type = point.type })
+		end
+	end
+end
+
+---@param point CPoint
 local function onEnterShop(point)
+	print('Entered shop zone')
 	if not point.entity then
 		local model = lib.requestModel(point.ped)
 
 		if not model then return end
 
-		local entity = CreatePed(0, model, point.coords.x, point.coords.y, point.coords.z, point.heading, false, true)
-
-		if point.scenario then TaskStartScenarioInPlace(entity, point.scenario, 0, true) end
-
-		SetModelAsNoLongerNeeded(model)
-		FreezeEntityPosition(entity, true)
+		-- local entity = CreatePed(model, point.coords.x, point.coords.y, point.coords.z, point.heading, false, true)
+		local entity = CreatePed(model, point.coords.x, point.coords.y, point.coords.z, point.heading, false, false, false, false)
+		repeat Wait(0) until DoesEntityExist(entity)
+		SetRandomOutfitVariation(entity, true)
+		PlaceEntityOnGroundProperly(entity, true)
+		SetEntityCanBeDamaged(entity, false)
 		SetEntityInvincible(entity, true)
-		SetBlockingOfNonTemporaryEvents(entity, true)
+		SetPedPromptName(entity, point.name)
 
-		exports.ox_target:addLocalEntity(entity, {
-            {
-                icon = point.icon or 'fas fa-shopping-basket',
-                label = point.label,
-                groups = point.groups,
-                onSelect = function()
-                    client.openInventory('shop', { id = point.invId, type = point.type })
-                end,
-                iconColor = point.iconColor,
-                distance = point.shopDistance or 2.0
-            }
-		})
+		local promptGroup = UiPromptGetGroupIdForTargetEntity(entity)
+		point.prompt = CreatePrompt(point.label, promptGroup)
+
+		-- if point.scenario then TaskStartScenarioInPlace(entity, point.scenario, 0, true) end
+
+		-- SetModelAsNoLongerNeeded(model)
+		-- FreezeEntityPosition(entity, true)
+		-- SetEntityInvincible(entity, true)
+		-- SetBlockingOfNonTemporaryEvents(entity, true)
+
+		-- exports.ox_target:addLocalEntity(entity, {
+        --     {
+        --         icon = point.icon or 'fas fa-shopping-basket',
+        --         label = point.label,
+        --         groups = point.groups,
+        --         onSelect = function()
+        --             client.openInventory('shop', { id = point.invId, type = point.type })
+        --         end,
+        --         iconColor = point.iconColor,
+        --         distance = point.shopDistance or 2.0
+        --     }
+		-- })
 
 		point.entity = entity
 	end
@@ -65,12 +99,17 @@ end
 local Utils = require 'modules.utils.client'
 
 local function onExitShop(point)
+	print('onExitShop')
 	local entity = point.entity
 
 	if not entity then return end
 
-	exports.ox_target:removeLocalEntity(entity)
+	-- exports.ox_target:removeLocalEntity(entity)
 	Utils.DeleteEntity(entity)
+
+	if point.prompt then
+		UiPromptDelete(point.prompt)
+	end
 
 	point.entity = nil
 end
@@ -110,8 +149,10 @@ local function refreshShops()
 	for type, shop in pairs(shopTypes) do
 		local blip = shop.blip
 		local label = shop.label or locale('open_label', shop.name)
+		local name = 'Shop Keeper'
 
-		if shared.target then
+		-- if shared.target then
+		if true then
 			if shop.model then
 				if not hasShopAccess(shop) then goto skipLoop end
 
@@ -136,13 +177,14 @@ local function refreshShops()
 						id += 1
 
 						shops[id] = lib.points.new({
+							name = name,
 							coords = target.loc,
 							heading = target.heading,
-							distance = 60,
+							distance = target.distance or 60,
 							inv = 'shop',
 							invId = i,
 							type = type,
-							blip = blip and hasShopAccess(shop) and createBlip(blip, target.loc),
+							-- blip = blip and hasShopAccess(shop) and createBlip(blip, target.loc),
 							ped = target.ped,
 							scenario = target.scenario,
 							label = label,
@@ -151,6 +193,7 @@ local function refreshShops()
 							iconColor = target.iconColor,
 							onEnter = onEnterShop,
 							onExit = onExitShop,
+							nearby = nearby,
 							shopDistance = target.distance,
 						})
 					else
@@ -172,7 +215,7 @@ local function refreshShops()
                                     distance = target.distance
                                 }
                             }),
-							blip = blip and createBlip(blip, target.coords)
+							-- blip = blip and createBlip(blip, target.coords)
 						}
 					end
 
@@ -196,10 +239,10 @@ local function refreshShops()
                     marker = client.shopmarker,
                     prompt = {
                         options = shop.icon and { icon = shop.icon } or shopPrompt,
-                        message = ('**%s**  \n%s'):format(label, locale('interact_prompt', GetControlInstructionalButton(0, 38, true):sub(3)))
+                        message = 'Message'
                     },
 					nearby = Utils.nearbyMarker,
-					blip = blip and createBlip(blip, coords)
+					-- blip = blip and createBlip(blip, coords)
 				})
 			end
 		end
