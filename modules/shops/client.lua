@@ -2,7 +2,7 @@ if not lib then return end
 
 local shopTypes = {}
 local shops = {}
--- local createBlip = require 'modules.utils.client'.CreateBlip
+local createBlip = require 'modules.utils.client'.CreateBlip
 
 local function CreatePrompt(name, group)
     local PedPrompt = UiPromptRegisterBegin()
@@ -184,7 +184,7 @@ local function refreshShops()
 							inv = 'shop',
 							invId = i,
 							type = type,
-							-- blip = blip and hasShopAccess(shop) and createBlip(blip, target.loc),
+							blip = blip and hasShopAccess(shop) and createBlip(blip, target.loc),
 							ped = target.ped,
 							scenario = target.scenario,
 							label = label,
