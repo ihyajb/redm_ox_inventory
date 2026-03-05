@@ -146,10 +146,11 @@ exports('weaponWheel', function (state)
 end)
 
 function Utils.CreateBlip(settings, coords)
-    local blip = BlipAddForCoords(settings.sprite, coords.x, coords.y, coords.z)
-    SetBlipScale(blip, settings.scale)
-    BlipAddModifier(blip, settings.colour)
-    SetBlipName(settings.name)
+    local blip = BlipAddForCoords(1664425300, coords.x, coords.y, coords.z)
+    SetBlipSprite(blip,settings.sprite,true)
+    SetBlipScale(blip, settings.scale or 1.0)
+    if settings.colour then BlipAddModifier(blip, settings.colour) end
+    SetBlipName(blip, settings.name)
 
     return blip
 end
