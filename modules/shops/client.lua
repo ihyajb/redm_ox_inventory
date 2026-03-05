@@ -4,6 +4,7 @@ local shopTypes = {}
 local shops = {}
 local createBlip = require 'modules.utils.client'.CreateBlip
 
+-- Should move this to utils
 local function CreatePrompt(name, group)
     local PedPrompt = UiPromptRegisterBegin()
     UiPromptSetControlAction(PedPrompt, 0xE3BF959B)

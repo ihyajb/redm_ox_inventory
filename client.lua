@@ -648,7 +648,7 @@ local function useSlot(slot, noAnim)
 
 						SetTimeout(100, function()
 							while IsPedReloading(playerPed) do
-								DisableControlAction(0, 22, true)
+								DisableControlAction(1, 0xE30CD707, true) -- I think disables the reload key from spamming?
 								Wait(0)
 							end
 						end)
@@ -797,33 +797,6 @@ local function registerCommands()
 		return client.openInventory()
 	end)
 
-	-- local primary = lib.addKeybind({
-	-- 	name = 'inv',
-	-- 	description = locale('open_player_inventory'),
-	-- 	defaultKey = client.keys[1],
-	-- 	onPressed = function()
-	-- 		if invOpen then
-	-- 			return client.closeInventory()
-	-- 		end
-
-	-- 		if cache.vehicle then
-	-- 			return openGlovebox(cache.vehicle)
-	-- 		end
-
-	-- 		local closest = lib.points.getClosestPoint()
-
-	-- 		if closest and closest.currentDistance < 1.2 and (not closest.instance or closest.instance == currentInstance) then
-	-- 			if closest.inv == 'crafting' then
-	-- 				return client.openInventory('crafting', { id = closest.id, index = closest.index })
-	-- 			elseif closest.inv ~= 'license' and closest.inv ~= 'policeevidence' then
-	-- 				return client.openInventory(closest.inv or 'drop', { id = closest.invId, type = closest.type })
-	-- 			end
-	-- 		end
-
-	-- 		return client.openInventory()
-	-- 	end
-	-- })
-
 	-- lib.addKeybind({
 	-- 	name = 'inv2',
 	-- 	description = locale('open_secondary_inventory'),
@@ -903,10 +876,8 @@ local function registerCommands()
 	registerCommands = nil
 end
 
-local keys = {
-	0x52D29063, 0x1CE6D9EB, 0xAE69478F,
-	0x8F9F9E58, 0xAB62E997
-}
+-- Hotbar keys (pulls weapons out tho so kinda weird, maybe also disable default action?)
+local keys = { 0x52D29063, 0x1CE6D9EB, 0xAE69478F, 0x8F9F9E58, 0xAB62E997 }
 
 CreateThread(function()
 	while true do
