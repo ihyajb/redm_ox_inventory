@@ -44,11 +44,6 @@ local Items = require 'modules.items.client'
 function client.onLogout()
 	if not PlayerData.loaded then return end
 
-	if client.parachute then
-		Utils.DeleteEntity(client.parachute[1])
-		client.parachute = false
-	end
-
 	for _, point in pairs(client.drops) do
 		if point.entity then
 			Utils.DeleteEntity(point.entity)

@@ -92,16 +92,6 @@ return {
 		}
 	},
 
-	['parachute'] = {
-		label = 'Parachute',
-		weight = 8000,
-		stack = false,
-		client = {
-			anim = { dict = 'clothingshirt', clip = 'try_shirt_positive_d' },
-			usetime = 1500
-		}
-	},
-
 	['garbage'] = {
 		label = 'Garbage',
 	},

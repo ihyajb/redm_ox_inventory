@@ -1450,11 +1450,6 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 				end
 			end
 		end
-
-		if client.parachute and GetPedParachuteState(playerPed) ~= -1 then
-			Utils.DeleteEntity(client.parachute[1])
-			client.parachute = false
-		end
 	end, 200)
 
 	local playerId = cache.playerId

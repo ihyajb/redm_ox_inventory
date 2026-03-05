@@ -110,25 +110,6 @@ Item('armour', function(data, slot)
 	end
 end)
 
-client.parachute = false
-Item('parachute', function(data, slot)
-	if not client.parachute then
-		ox_inventory:useItem(data, function(data)
-			if data then
-				local chute = `GADGET_PARACHUTE`
-				SetPlayerParachuteTintIndex(PlayerData.id, -1)
-				GiveWeaponToPed(cache.ped, chute, 0, true, false)
-				SetPedGadget(cache.ped, chute, true)
-				lib.requestModel(1269906701)
-				client.parachute = {CreateParachuteBagObject(cache.ped, true, true), slot?.metadata?.type or -1}
-				if slot.metadata.type then
-					SetPlayerParachuteTintIndex(PlayerData.id, slot.metadata.type)
-				end
-			end
-		end)
-	end
-end)
-
 Item('phone', function(data, slot)
 	local success, result = pcall(function()
 		return exports.npwd:isPhoneVisible()
