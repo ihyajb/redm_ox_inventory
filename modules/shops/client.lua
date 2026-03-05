@@ -24,7 +24,6 @@ for shopType, shopData in pairs(lib.load('data.shops') or {} --[[@as table<strin
 		groups = shopData.groups or shopData.jobs,
 		blip = shopData.blip,
 		label = shopData.label,
-        icon = shopData.icon
 	}
 
 	-- if shared.target then
@@ -58,41 +57,23 @@ local function onEnterShop(point)
 	print('Entered shop zone')
 	if not point.entity then
 		local model = lib.requestModel(point.ped)
-
 		if not model then return end
 
-		-- local entity = CreatePed(model, point.coords.x, point.coords.y, point.coords.z, point.heading, false, true)
 		local entity = CreatePed(model, point.coords.x, point.coords.y, point.coords.z, point.heading, false, false, false, false)
 		repeat Wait(0) until DoesEntityExist(entity)
+		SetModelAsNoLongerNeeded(model)
+		FreezeEntityPosition(entity, true)
 		SetRandomOutfitVariation(entity, true)
 		PlaceEntityOnGroundProperly(entity, true)
 		SetEntityCanBeDamaged(entity, false)
 		SetEntityInvincible(entity, true)
 		SetPedPromptName(entity, point.name)
+		-- SetBlockingOfNonTemporaryEvents(entity, true) -- This blocks ped from being targeted?
 
 		local promptGroup = UiPromptGetGroupIdForTargetEntity(entity)
 		point.prompt = CreatePrompt(point.label, promptGroup)
 
-		-- if point.scenario then TaskStartScenarioInPlace(entity, point.scenario, 0, true) end
-
-		-- SetModelAsNoLongerNeeded(model)
-		-- FreezeEntityPosition(entity, true)
-		-- SetEntityInvincible(entity, true)
-		-- SetBlockingOfNonTemporaryEvents(entity, true)
-
-		-- exports.ox_target:addLocalEntity(entity, {
-        --     {
-        --         icon = point.icon or 'fas fa-shopping-basket',
-        --         label = point.label,
-        --         groups = point.groups,
-        --         onSelect = function()
-        --             client.openInventory('shop', { id = point.invId, type = point.type })
-        --         end,
-        --         iconColor = point.iconColor,
-        --         distance = point.shopDistance or 2.0
-        --     }
-		-- })
-
+		-- if point.scenario then TaskStartScenarioInPlace(entity, point.scenario, 0, true) end -- idk the rdr native anims
 		point.entity = entity
 	end
 end
@@ -157,18 +138,19 @@ local function refreshShops()
 			if shop.model then
 				if not hasShopAccess(shop) then goto skipLoop end
 
-				exports.ox_target:removeModel(shop.model, shop.name)
-				exports.ox_target:addModel(shop.model, {
-                    {
-                        name = shop.name,
-                        icon = shop.icon or 'fas fa-shopping-basket',
-                        label = label,
-                        onSelect = function()
-                            client.openInventory('shop', { type = type })
-                        end,
-                        distance = 2
-                    },
-				})
+				print('This is bad')
+				-- exports.ox_target:removeModel(shop.model, shop.name)
+				-- exports.ox_target:addModel(shop.model, {
+                --     {
+                --         name = shop.name,
+                --         icon = shop.icon or 'fas fa-shopping-basket',
+                --         label = label,
+                --         onSelect = function()
+                --             client.openInventory('shop', { type = type })
+                --         end,
+                --         distance = 2
+                --     },
+				-- })
 			elseif shop.targets then
 				for i = 1, #shop.targets do
 					local target = shop.targets[i]
@@ -190,8 +172,6 @@ local function refreshShops()
 							scenario = target.scenario,
 							label = label,
 							groups = shop.groups,
-							icon = shop.icon or 'fas fa-shopping-basket',
-							iconColor = target.iconColor,
 							onEnter = onEnterShop,
 							onExit = onExitShop,
 							nearby = nearby,

@@ -2327,7 +2327,7 @@ local isSaving = false
 local inventoryClearTime = GetConvarInt('inventory:cleartime', 5) * 60
 
 local function saveInventories(clearInventories)
-	if isSaving then return end
+	if isSaving then print('Cant Save Inventories, already in the middle of saving!') return end
 
 	local time = os.time()
 	local parameters = { {}, {}, {}, {} }

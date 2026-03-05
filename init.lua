@@ -17,7 +17,7 @@ shared = {
     framework = GetConvar('inventory:framework', 'esx'),
     playerslots = GetConvarInt('inventory:slots', 50),
     playerweight = GetConvarInt('inventory:weight', 30000),
-    target = GetConvarInt('inventory:target', 0) == 1,
+    target = true, -- This will be for like prompts, close enough
     police = json.decode(GetConvar('inventory:police', '["police", "sheriff"]')),
     networkdumpsters = GetConvarInt('inventory:networkdumpsters', 0) == 1
 }
@@ -225,12 +225,6 @@ end
 if not LoadResourceFile(shared.resource, 'web/build/index.html') then
     return spamError(
         'UI has not been built, refer to the documentation or download a release build.\n	^3https://coxdocs.dev/ox_inventory^0')
-end
-
--- No we're not going to support qtarget any longer.
-if shared.target and GetResourceState('ox_target') ~= 'started' then
-    shared.target = false
-    warn('ox_target is not loaded - it should start before ox_inventory')
 end
 
 if lib.context == 'server' then

@@ -37,6 +37,7 @@ AddStateBagChangeHandler('loadInventory', nil, function(bagName, _, value)
     })
 end)
 
+-- Dont forget to only actually check "LoggedIn" players
 SetTimeout(500, function()
     local playersData = GetPlayers()
     for i = 1, #playersData do setupPlayer({
