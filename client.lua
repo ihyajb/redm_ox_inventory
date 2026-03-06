@@ -524,7 +524,14 @@ local function useSlot(slot, noAnim)
 			local hasWeapon = HasPedGotWeapon(cache.ped, data.hash, 0, false)
 			if hasWeapon then
 				RemoveWeaponFromPed(cache.ped, data.hash)
+				if client.weaponnotify then
+					Utils.ItemNotify({ item, 'ui_holstered' })
+				end
 				return
+			end
+
+			if client.weaponnotify then
+				Utils.ItemNotify({ item, 'ui_equipped' })
 			end
 
 			-- if currentWeapon then
