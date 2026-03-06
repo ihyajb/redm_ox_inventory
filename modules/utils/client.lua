@@ -221,19 +221,12 @@ function Utils.nearbyMarker(point)
 end
 
 function Utils.blurIn()
-    if IsScreenblurFadeRunning() then
-        DisableScreenblurFade()
-    end
-
-    TriggerScreenblurFadeIn(100)
+    AnimpostfxPlay('OJDominoBlur')
+    AnimpostfxSetStrength('OJDominoBlur', 0.5)
 end
 
 function Utils.blurOut()
-    if IsScreenblurFadeRunning() then
-        DisableScreenblurFade()
-    end
-
-    TriggerScreenblurFadeOut(250)
+    AnimpostfxStop('OJDominoBlur')
 end
 
 
