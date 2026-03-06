@@ -86,9 +86,6 @@ for type, data in pairs(lib.load('data.weapons') or {}) do
 			v.stack = v.throwable and true or false
 			v.durability = v.durability or 0.05
 			v.weapon = true
-			if string.find(k, 'WEAPON_KIT') then -- Failsafe for if people give it durability when it shouldn't have it
-				v.durability = nil
-			end
 		else
 			v.stack = true
 		end

@@ -1937,7 +1937,7 @@ lib.onCache('weapon', function(value)
 		lib.print.warn(('Weapon with hash %s does not have a name defined in WeaponMap, cannot track durability or ammo'):format(value))
 		return
 	end
-	if string.find(weaponName, 'WEAPON_KIT') then
+	if string.find(weaponName, 'WEAPON_KIT_') then
 		return
 	end
 	local item = Inventory.Search('slots', weaponName)
