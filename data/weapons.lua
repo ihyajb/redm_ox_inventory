@@ -24,6 +24,7 @@ return {
 			label = 'Binoculars',
 			weight = 500,
 			durability = 0.03,
+			dontCreateSerial = true,
 			-- ammoname = 'ammo_revolver'
 		}
 	},

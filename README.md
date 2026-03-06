@@ -12,6 +12,8 @@ also this is a fork of [CommunityOx/ox_inventory](https://github.com/CommunityOx
 - [ ] Prompts on like stash's from data.stash or whatever
 - [ ] Unfuck the weird framework shit I did to make it work with a custom framework
 - [ ] Re-add the locales I deleted after it all works (also hook locales backup to the hard-coded shit I did, because im lazy)
+- [ ] Dont create serials on WEAPON_KIT_*'s
+- [ ] Support Duel Wielding when equipping a pistol, with one already active
 
 ## Copyright
 
