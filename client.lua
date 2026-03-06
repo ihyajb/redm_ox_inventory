@@ -1507,6 +1507,9 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 							currentAmmo = weaponAmmo - durabilityDrain < 0 and 0 or weaponAmmo - durabilityDrain
 							currentWeapon.metadata.durability = currentAmmo
 							currentWeapon.metadata.ammo = (weaponAmmo < currentAmmo) and 0 or currentAmmo
+							--TODO
+							-- local weaponObject = GetObjectIndexFromEntityIndex(GetCurrentPedWeaponEntityIndex(cache.ped, 0))
+							-- SetWeaponDegradation(weaponObject, 0.5)
 
 							if currentAmmo <= 0 then
 								SetPedInfiniteAmmo(playerPed, false, currentWeapon.hash)
@@ -1932,6 +1935,9 @@ lib.onCache('weapon', function(value)
 	local weaponName = WeaponMap[value]
 	if not weaponName then
 		lib.print.warn(('Weapon with hash %s does not have a name defined in WeaponMap, cannot track durability or ammo'):format(value))
+		return
+	end
+	if string.find(weaponName, 'WEAPON_KIT_') then
 		return
 	end
 	local item = Inventory.Search('slots', weaponName)
