@@ -23,8 +23,6 @@ return {
 		['WEAPON_KIT_BINOCULARS'] = {
 			label = 'Binoculars',
 			weight = 500,
-			durability = 0.03,
-			-- ammoname = 'ammo_revolver'
 		}
 	},
 
