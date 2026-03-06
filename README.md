@@ -5,11 +5,11 @@ Sorry if you decide to help on this, this is like, super fucking WIP, and the co
 ## TODOS
 
 - [x] Shop Ped Prompts
-- [] Weapon amoo "types" like explosive or whatever (this is harder then i orignally thought lol)
-- [] Horse Satchel bags?
-- [] Prompts on like stash's from data.stash or whatever
-- [] Unfuck the weird framework shit I did to make it work with a custom framework
-- [] Re-add the locales I deleted after it all works (also hook locales backup to the hard-coded shit I did, because im lazy)
+- [ ] Weapon amoo "types" like explosive or whatever (this is harder then i orignally thought lol)
+- [ ] Horse Satchel bags?
+- [ ] Prompts on like stash's from data.stash or whatever
+- [ ] Unfuck the weird framework shit I did to make it work with a custom framework
+- [ ] Re-add the locales I deleted after it all works (also hook locales backup to the hard-coded shit I did, because im lazy)
 
 ## Copyright
 
