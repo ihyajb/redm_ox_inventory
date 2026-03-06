@@ -2,6 +2,8 @@
 
 Sorry if you decide to help on this, this is like, super fucking WIP, and the code is also shit. Im more so trying to get shit working before making it preformant / pretty :)
 
+also this is a fork of [CommunityOx/ox_inventory](https://github.com/CommunityOx/ox_inventory) (idky I never actually forked it tbh, if this eventually works I will, unless theres a way to relink it to the fork idk)
+
 ## TODOS
 
 - [x] Shop Ped Prompts
