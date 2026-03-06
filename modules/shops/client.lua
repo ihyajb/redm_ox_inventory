@@ -37,8 +37,8 @@ for shopType, shopData in pairs(lib.load('data.shops') or {} --[[@as table<strin
 	local blip = shop.blip
 
 	if blip then
-		blip.name = ('ox_shop_%s'):format(shopType)
-		AddTextEntry(blip.name, shop.name or shopType)
+		blip.name = shopData.name
+		-- AddTextEntry(blip.name, shop.name or shopType)
 	end
 end
 

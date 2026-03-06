@@ -8,12 +8,29 @@ return {
 			{ name = 'water', price = 10 },
 			{ name = 'cola', price = 10 },
 		}, targets = {
-			{
-                loc = vector3(-324.06497192383, 803.37866210938, 117.88168334961),
-                ped = `u_m_m_sdexoticsshopkeeper_01`,
-                heading = 270.311,
-				distance = 10.0,
-            },
+			{ loc = vector3(-324.06, 803.37, 117.88), ped = `u_m_m_sdexoticsshopkeeper_01`, heading = 270.311, distance = 10.0 },
+			{ loc = vector3(1330.227, -1293.41, 76.021), ped = `u_m_m_sdexoticsshopkeeper_01`, heading = 68.88, distance = 10.0 },
+			{ loc = vector3(-1789.66, -387.918, 159.32), ped = `u_m_m_sdexoticsshopkeeper_01`, heading = 56.96, distance = 10.0 },
+			{ loc = vector3(-784.738, -1321.73, 42.884), ped = `u_m_m_sdexoticsshopkeeper_01`, heading = 179.63, distance = 10.0 },
+			{ loc = vector3(-3687.34, -2623.53, -13.43), ped = `u_m_m_sdexoticsshopkeeper_01`, heading = -85.32, distance = 10.0 },
+			{ loc = vector3(-5485.70, -2938.08, -0.299), ped = `u_m_m_sdexoticsshopkeeper_01`, heading = 127.72, distance = 10.0 },
+			{ loc = vector3(2824.863, -1319.74, 45.755), ped = `u_m_m_sdexoticsshopkeeper_01`, heading = -39.61, distance = 10.0 },
+			{ loc = vector3(3025.420, 561.7910, 43.722), ped = `u_m_m_sdexoticsshopkeeper_01`, heading = -99.20, distance = 10.0 },
+		}
+	},
+
+	Gun = {
+		name = 'Gun Store',
+		blip = {
+			sprite = `blip_shop_gunsmith`, colour = `BLIP_MODIFIER_LOCAL_PLAYER_OWNED`, scale = 0.8
+		}, inventory = {
+			{ name = 'WEAPON_RIFLE_VARMINT', price = 10 },
+		}, targets = {
+			{ loc = vector3(-280.4646, 779.0331, 119.2540), ped = `S_M_M_UNIBUTCHERS_01`, heading = 2.82, distance = 10.0 },
+			{ loc = vector3(2717.75, -1286.62, 49.64), ped = `S_M_M_UNIBUTCHERS_01`, heading = 44.58, distance = 10.0 },
+			{ loc = vector3(1322.95, -1323.21, 77.89), ped = `S_M_M_UNIBUTCHERS_01`, heading = 350.17, distance = 10.0 },
+			{ loc = vector3(2948.16, 1318.79, 44.82), ped = `S_M_M_UNIBUTCHERS_01`, heading = 91.34, distance = 10.0 },
+			{ loc = vector3(-5505.97, -2963.91, -0.64), ped = `S_M_M_UNIBUTCHERS_01`, heading = 103.15, distance = 10.0 },
 		}
 	},
 
