@@ -2547,7 +2547,6 @@ local function updateWeapon(source, action, value, slot, ammoType)
 				local ammo = ammoType
 				local diff = value - (weapon.metadata.ammo or 0)
 
-				print('Trying to remove: ', ammo)
 				if not Inventory.RemoveItem(inventory, ammo, diff) then print('failed to update weapon', inventory, ammo, diff	) return end
 
 				print('New Ammo:', value)

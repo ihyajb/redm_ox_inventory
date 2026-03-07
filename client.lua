@@ -548,7 +548,6 @@ local function useSlot(slot, noAnim)
 			end, noAnim)
 		elseif currentWeapon then
 			if data.ammo then
-				print('Used Ammo?')
 				if EnableWeaponWheel or currentWeapon.metadata.durability <= 0 then return end
 
 				if not Citizen.InvokeNative(0xC570B881754DF609, currentWeapon.hash, joaat(data.name)) then -- IsAmmoTypeValidForWeapon
@@ -562,29 +561,27 @@ local function useSlot(slot, noAnim)
 				local clipSize = GetMaxAmmoInClip(playerPed, currentWeapon.hash, true)
 				local usingBow = currentWeapon.hash == `WEAPON_BOW` or currentWeapon.hash == `WEAPON_BOW_IMPROVED`
 				if usingBow then clipSize = 5 end --! Test
-				local currentAmmo = GetAmmoInPedWeapon(playerPed, currentWeapon.hash)
+				local currentAmmo = GetPedAmmoByType(playerPed, joaat(currentWeapon.metadata?.ammoType))
 				local _, maxAmmo = GetMaxAmmo(playerPed, currentWeapon.hash)
 
 				if maxAmmo < clipSize then clipSize = maxAmmo end
 
-				if currentAmmo == clipSize then print('currentAmmo == clipSize') return end
+				if currentAmmo == clipSize then print('Max ammo already in clip') return end
 
 				useItem(data, function(resp)
-					print('Were inside the callback')
 					if not resp or not Citizen.InvokeNative(0x1F7977C9101F807F, joaat(resp.name)) then return end
 
 					if maxAmmo > clipSize and not usingBow then
 						clipSize = GetMaxAmmoInClip(playerPed, currentWeapon.hash, true)
 					end
 
-					currentAmmo = GetAmmoInPedWeapon(playerPed, currentWeapon.hash)
+					currentAmmo = GetPedAmmoByType(playerPed, joaat(currentWeapon.metadata?.ammoType))
 					local missingAmmo = clipSize - currentAmmo
 					local addAmmo = resp.count > missingAmmo and missingAmmo or resp.count
 					local newAmmo = currentAmmo + addAmmo
 
-					if newAmmo == currentAmmo then return end
+					if newAmmo == currentAmmo then return print('newAmmo == currentAmmo') end
 
-					print('Adding Ammo like actually this time')
 					Citizen.InvokeNative(0x106A811C6D3035F3, playerPed, joaat(resp.name), addAmmo, `ADD_REASON_DEFAULT`) --AddAmmoToPedByType
 					Citizen.InvokeNative(0xCC9C4393523833E2, playerPed, currentWeapon.hash, joaat(resp.name)) --SetAmmoTypeForPedWeapon
 
@@ -789,12 +786,12 @@ local function registerCommands()
 
 	RegisterCommand('reload', function()
 		if not currentWeapon or EnableWeaponWheel or not canUseItem(true) then return end
-		print('Reloading?')
+		-- print('Reloading?')
 
 		if currentWeapon.metadata.ammoType then
 			if currentWeapon.metadata.durability > 0 then
 				local slotId = Inventory.GetSlotIdWithItem(currentWeapon.metadata.ammoType, { type = currentWeapon.metadata.specialAmmo }, false)
-				print(slotId, currentWeapon.metadata.ammoType)
+				-- print(slotId, currentWeapon.metadata.ammoType)
 
 				if slotId then
 					useSlot(slotId)
@@ -902,7 +899,6 @@ local function updateInventory(data, weight)
 				    currentWeapon.metadata = item.metadata
 				    TriggerEvent('ox_inventory:currentWeapon', currentWeapon)
 					print('Weapon Metadata Updated')
-					-- print('updated current weapon metadata', json.encode(item.metadata))
                 else
                     currentWeapon = Weapon.Disarm(currentWeapon, true)
                 end
@@ -961,7 +957,6 @@ local function updateInventory(data, weight)
 end
 
 RegisterNetEvent('ox_inventory:updateSlots', function(items, weights)
-	-- print('ox_inventory:updateSlots')
 	if source ~= '' and next(items) then updateInventory(items, weights) end
 end)
 
@@ -1434,13 +1429,13 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 				if not invBusy and currentWeapon.timer ~= 0 and currentWeapon.timer < GetGameTimer() then
 					currentWeapon.timer = 0
 
-					print('weaponAmmo', weaponAmmo)
 					if weaponAmmo then
+						print('Triggering ox_inventory:updateWeapon', weaponAmmo)
 						TriggerServerEvent('ox_inventory:updateWeapon', 'ammo', weaponAmmo)
 
 						if client.autoreload and currentWeapon.metadata.ammoType and GetPedAmmoByType(playerPed, joaat(currentWeapon.metadata.ammoType)) == 0 then
 							local slotId = Inventory.GetSlotIdWithItem(currentWeapon.metadata.ammoType, { type = currentWeapon.metadata.specialAmmo }, false)
-							print('Auto Reload', slotId, currentWeapon.metadata.ammoType)
+							-- print('Auto Reload', slotId, currentWeapon.metadata.ammoType)
 
 							if slotId then
 								CreateThread(function() useSlot(slotId) end)
@@ -1453,7 +1448,6 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 					end
 				elseif weaponAmmo then
 					if IsPedShooting(playerPed) then
-						print('Ped Shooting')
 						local currentAmmo
 						local durabilityDrain = Items[currentWeapon.name].durability
 
@@ -1471,7 +1465,7 @@ RegisterNetEvent('ox_inventory:setPlayerInventory', function(currentDrops, inven
 							if currentAmmo < weaponAmmo then
 								currentAmmo = (weaponAmmo < currentAmmo) and 0 or currentAmmo
 								currentWeapon.metadata.ammo = currentAmmo
-								print('Item Ammo Set to: ', currentWeapon.metadata.ammo)
+								-- print('Item Ammo Set to: ', currentWeapon.metadata.ammo)
 								currentWeapon.metadata.durability = currentWeapon.metadata.durability - (durabilityDrain * math.abs((weaponAmmo or 0.1) - currentAmmo))
 							end
 						end
@@ -1880,6 +1874,7 @@ end)
 -- Idk a better way to do this tbh...
 lib.onCache('weapon', function(value)
 	if not value then
+		if currentWeapon then Weapon.Disarm(currentWeapon, true) end
 		currentWeapon = nil
 		return
 	end
@@ -1896,6 +1891,7 @@ lib.onCache('weapon', function(value)
 	if item and item[1] then
 		local itemData = Items[item[1].name]
 		currentWeapon, _ = Weapon.Equip(item[1], itemData, true)
+		TriggerServerEvent('ox_inventory:setCurrentWeaponSlot', currentWeapon.slot)
 		-- lib.print.info(currentWeapon)
 	end
 end)
@@ -1911,12 +1907,7 @@ end)
 -- 		Wait(1000)
 
 -- 		if currentWeapon then
--- 			print(currentWeapon.metadata.ammoType)
+-- 			print(currentWeapon.name, currentWeapon.metadata.ammoType)
 -- 		end
 -- 	end
 -- end)
-
-RegisterCommand('test2', function()
-	local slotId = Inventory.GetSlotIdWithItem('AMMO_RIFLE', nil, false)
-	print(slotId)
-end)

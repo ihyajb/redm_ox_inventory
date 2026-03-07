@@ -200,7 +200,6 @@ end
 ---@return SlotWithItem?
 function Inventory.GetSlotWithItem(itemName, metadata, strict)
     local inventory = PlayerData.inventory
-    print('itemName', itemName)
     local item = Items(itemName) --[[@as OxClientItem?]]
 
     if not inventory or not item then return end
@@ -222,7 +221,6 @@ exports('GetSlotWithItem', Inventory.GetSlotWithItem)
 ---@param strict? boolean Strictly match metadata properties, otherwise use partial matching.
 ---@return number?
 function Inventory.GetSlotIdWithItem(itemName, metadata, strict)
-    print('GetSlotIdWithItem', itemName, metadata, strict)
     return Inventory.GetSlotWithItem(itemName, metadata, strict)?.slot
 end
 

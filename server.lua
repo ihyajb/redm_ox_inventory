@@ -430,13 +430,16 @@ lib.callback.register('ox_inventory:useItem', function(source, itemName, slot, m
 			data = {name=data.name, label=label, count=data.count, slot=slot, metadata=data.metadata, weight=data.weight}
 
 			if item.ammo then
-				if inventory.weapon then
-					local weapon = inventory.items[inventory.weapon]
+				-- :(
 
-					if weapon and weapon?.metadata.durability > 0 then
-						consume = nil
-					end
-				else return false end
+				-- lib.print.info(inventory)
+				-- if inventory.weapon then
+				-- 	local weapon = inventory.items[inventory.weapon]
+
+				-- 	if weapon and weapon?.metadata.durability > 0 then
+				-- 		consume = nil
+				-- 	end
+				-- else print('Missing Data5') return false end
 			elseif item.component or item.tint then
 				consume = 1
 				data.component = true
@@ -474,9 +477,10 @@ lib.callback.register('ox_inventory:useItem', function(source, itemName, slot, m
             ---@type boolean
 			local success = lib.callback.await('ox_inventory:usingItem', source, data, noAnim)
 
-			if item.weapon then
-				inventory.weapon = success and slot or nil
-			end
+			-- if item.weapon then
+			-- 	inventory.weapon = success and slot or nil
+			-- 	print('Set current weapon slot to', inventory.weapon)
+			-- end
 
 			if not success then return end
 
@@ -534,6 +538,13 @@ lib.callback.register('ox_inventory:useItem', function(source, itemName, slot, m
 			return true
 		end
 	end
+end)
+
+RegisterNetEvent('ox_inventory:setCurrentWeaponSlot', function(slot)
+	local inventory = Inventory(source)
+	if not inventory then return end
+	print('inventory.weapon = slot', slot)
+	inventory.weapon = slot
 end)
 
 local function conversionScript()
