@@ -7,7 +7,7 @@ also this is a fork of [CommunityOx/ox_inventory](https://github.com/CommunityOx
 ## TODOS
 
 - [x] Shop Ped Prompts
-- [ ] Weapon amoo "types" like explosive or whatever (this is harder then i orignally thought lol)
+- [x] Weapon ammo "types" like explosive or whatever (this kinda works now)
 - [ ] Horse Satchel bags?
 - [ ] Prompts on like stash's from data.stash or whatever
 - [ ] Unfuck the weird framework shit I did to make it work with a custom framework

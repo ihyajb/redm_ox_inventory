@@ -229,5 +229,20 @@ function Utils.blurOut()
     AnimpostfxStop('OJDominoBlur')
 end
 
+function Utils.CreatePrompt(name, group, holdTime)
+    local prompt = UiPromptRegisterBegin()
+    UiPromptSetControlAction(prompt, 0xE3BF959B)
+    UiPromptSetText(prompt, CreateVarString(10, "LITERAL_STRING", name))
+    UiPromptSetEnabled(prompt, true)
+    UiPromptSetVisible(prompt, true)
+    UiPromptSetStandardMode(prompt, true)
+    if holdTime then
+        UiPromptSetHoldMode(prompt, holdTime)
+    end
+    UiPromptSetGroup(prompt, group, 0)
+    UiPromptRegisterEnd(prompt)
+    return prompt
+end
+
 
 return Utils

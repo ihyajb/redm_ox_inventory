@@ -85,6 +85,8 @@ for type, data in pairs(lib.load('data.weapons') or {}) do
 			v.hash = joaat(v.model)
 			v.stack = v.throwable and true or false
 			v.durability = v.durability or 0.05
+			v.attachPoint = v.attachPoint or 0
+			v.allowedAmmos = v.allowedAmmos or nil -- nil might bug
 			v.weapon = true
 		else
 			v.stack = true

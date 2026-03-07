@@ -2,21 +2,8 @@ if not lib then return end
 
 local shopTypes = {}
 local shops = {}
-local createBlip = require 'modules.utils.client'.CreateBlip
-
--- Should move this to utils
-local function CreatePrompt(name, group)
-    local PedPrompt = UiPromptRegisterBegin()
-    UiPromptSetControlAction(PedPrompt, 0xE3BF959B)
-    UiPromptSetText(PedPrompt, CreateVarString(10, "LITERAL_STRING", name))
-    UiPromptSetEnabled(PedPrompt, true)
-    UiPromptSetVisible(PedPrompt, true)
-    UiPromptSetStandardMode(PedPrompt, true)
-    -- UiPromptSetHoldMode(PedPrompt, 1000)
-    UiPromptSetGroup(PedPrompt, group, 0)
-    UiPromptRegisterEnd(PedPrompt)
-    return PedPrompt
-end
+local Utils = require 'modules.utils.client'
+if not Utils then error('Utils not found') end
 
 for shopType, shopData in pairs(lib.load('data.shops') or {} --[[@as table<string, OxShop>]]) do
 	local shop = {
@@ -71,14 +58,12 @@ local function onEnterShop(point)
 		-- SetBlockingOfNonTemporaryEvents(entity, true) -- This blocks ped from being targeted?
 
 		local promptGroup = UiPromptGetGroupIdForTargetEntity(entity)
-		point.prompt = CreatePrompt(point.label, promptGroup)
+		point.prompt = Utils.CreatePrompt(point.label, promptGroup)
 
 		-- if point.scenario then TaskStartScenarioInPlace(entity, point.scenario, 0, true) end -- idk the rdr native anims
 		point.entity = entity
 	end
 end
-
-local Utils = require 'modules.utils.client'
 
 local function onExitShop(point)
 	print('onExitShop')
@@ -167,7 +152,7 @@ local function refreshShops()
 							inv = 'shop',
 							invId = i,
 							type = type,
-							blip = blip and hasShopAccess(shop) and createBlip(blip, target.loc),
+							blip = blip and hasShopAccess(shop) and Utils.CreateBlip(blip, target.loc),
 							ped = target.ped,
 							scenario = target.scenario,
 							label = label,
@@ -196,7 +181,7 @@ local function refreshShops()
                                     distance = target.distance
                                 }
                             }),
-							-- blip = blip and createBlip(blip, target.coords)
+							-- blip = blip and Utils.CreateBlip(blip, target.coords)
 						}
 					end
 

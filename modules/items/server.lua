@@ -30,6 +30,8 @@ local function getItem(_, name)
 
     if name:sub(0, 7) == 'weapon_' then
         name = name:upper()
+	elseif name:sub(0, 5) == 'ammo_' then
+		name = name:upper()
     end
 
     return ItemList[name]
@@ -175,10 +177,11 @@ function Items.Metadata(inv, item, metadata, count)
 
 	if item.weapon then
 		if type(metadata) ~= 'table' then metadata = {} end
-		if not metadata.durability then 
+		if not metadata.durability then
 			metadata = setItemDurability(item, metadata)
 		end
-		if not metadata.ammo and item.ammoname then metadata.ammo = 0 end
+		if not metadata.ammo and item.allowedAmmos then metadata.ammo = 0 end
+		-- if not metadata.ammoType and item.allowedAmmos then metadata.ammoType = item.allowedAmmos[1] end
 		if not metadata.components then metadata.components = {} end
 
 		if metadata.registered ~= false and (metadata.ammo or item.name == 'WEAPON_STUNGUN') then

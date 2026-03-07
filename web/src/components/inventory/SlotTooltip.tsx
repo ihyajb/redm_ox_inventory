@@ -19,7 +19,7 @@ const SlotTooltip: React.ForwardRefRenderFunction<
     return Object.entries(item.ingredients).sort((a, b) => a[1] - b[1]);
   }, [item]);
   const description = item.metadata?.description || itemData?.description;
-  const ammoName = itemData?.ammoName && Items[itemData?.ammoName]?.label;
+  // const ammoName = itemData?.ammoName && Items[itemData?.ammoName]?.label;
 
   return (
     <>
@@ -61,9 +61,9 @@ const SlotTooltip: React.ForwardRefRenderFunction<
                   {Locale.ui_ammo}: {item.metadata.ammo}
                 </p>
               )}
-              {ammoName && (
+              {item.metadata?.ammoType !== undefined && (
                 <p>
-                  {Locale.ammo_type}: {ammoName}
+                  AmmoType: {item.metadata?.ammoType}
                 </p>
               )}
               {item.metadata?.serial && (

@@ -430,8 +430,8 @@ function Inventory.SlotWeight(item, slot, ignoreCount)
 
 	if not slot.metadata then slot.metadata = {} end
 
-	if item.ammoname and slot.metadata.ammo then
-		local ammoWeight = Items(item.ammoname)?.weight
+	if slot.metadata?.ammoType and slot.metadata?.ammo then
+		local ammoWeight = Items(slot.metadata?.ammoType)?.weight
 
 		if ammoWeight then
 			weight += (ammoWeight * slot.metadata.ammo)
@@ -1241,6 +1241,7 @@ function Inventory.Search(inv, search, items, metadata)
 			for i = 1, itemCount do
 				local item = string.lower(items[i])
 				if item:sub(0, 7) == 'weapon_' then item = string.upper(item) end
+				if item:sub(0, 5) == 'ammo_' then item = string.upper(item) end
 
 				if search == 1 then
 					returnData[item] = {}
@@ -2497,7 +2498,7 @@ end
 lib.callback.register('ox_inventory:giveItem', giveItem)
 RegisterServerEvent('ox_inventory:giveItem', function(...) giveItem(source, ...) end)
 
-local function updateWeapon(source, action, value, slot, specialAmmo)
+local function updateWeapon(source, action, value, slot, ammoType)
 	local inventory = Inventory(source)
 
 	if not inventory then return end
@@ -2543,14 +2544,15 @@ local function updateWeapon(source, action, value, slot, specialAmmo)
 			end
 
 			if action == 'load' and weapon.metadata.durability > 0 then
-				local ammo = Items(weapon.name).ammoname
+				local ammo = ammoType
 				local diff = value - (weapon.metadata.ammo or 0)
 
-				if not Inventory.RemoveItem(inventory, ammo, diff, specialAmmo) then return end
+				print('Trying to remove: ', ammo)
+				if not Inventory.RemoveItem(inventory, ammo, diff) then print('failed to update weapon', inventory, ammo, diff	) return end
 
 				print('New Ammo:', value)
 				weapon.metadata.ammo = value
-				weapon.metadata.specialAmmo = specialAmmo
+				weapon.metadata.ammoType = ammoType
 				weapon.weight = Inventory.SlotWeight(item, weapon)
 			elseif action == 'throw' then
 				if not Inventory.RemoveItem(inventory, weapon.name, 1, weapon.metadata, weapon.slot) then return end
@@ -2606,28 +2608,28 @@ end
 
 lib.callback.register('ox_inventory:updateWeapon', updateWeapon)
 
-RegisterNetEvent('ox_inventory:updateWeapon', function(action, value, slot, specialAmmo)
-	updateWeapon(source, action, value, slot, specialAmmo)
+RegisterNetEvent('ox_inventory:updateWeapon', function(action, value, slot, ammoType)
+	updateWeapon(source, action, value, slot, ammoType)
 end)
 
 lib.callback.register('ox_inventory:removeAmmoFromWeapon', function(source, slot)
 	local inventory = Inventory(source)
 
-	if not inventory then print('Missing Inventory') return end
+	if not inventory then return end
 
 	local slotData = inventory.items[slot]
 
-	if not slotData or not slotData.metadata.ammo or slotData.metadata.ammo < 1 then print('Fucked Slot Data?') return end
+	if not slotData or not slotData.metadata?.ammoType or not slotData.metadata?.ammo or slotData.metadata?.ammo < 1 then return end
 
-	local item = Items(slotData.name)
+	local item = Items(slotData.metadata?.ammoType)
 
-	if not item or not item.ammoname then print('No Item?') return end
-	local specialAmmo = slotData.metadata.specialAmmo and { type = slotData.metadata.specialAmmo } or nil
+	--if not item or not item.ammoname then return end
+	if not item then return end
 
-
-	if Inventory.AddItem(inventory, item.ammoname, slotData.metadata.ammo, specialAmmo) then
+	if Inventory.AddItem(inventory, item.name, slotData.metadata?.ammo) then
 		slotData.metadata.ammo = 0
-		slotData.weight = Inventory.SlotWeight(item, slotData)
+		slotData.metadata.ammoType = nil
+		slotData.weight = Inventory.SlotWeight(Items(slotData.name), slotData)
 
 		inventory:syncSlotsWithPlayer({
 			{ item = slotData }

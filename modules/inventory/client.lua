@@ -146,6 +146,7 @@ function Inventory.Search(search, item, metadata)
         for i = 1, items do
             local item = string.lower(item[i])
             if item:sub(0, 7) == 'weapon_' then item = string.upper(item) end
+            if item:sub(0, 5) == 'ammo_' then item = string.upper(item) end
             if search == 1 then
                 returnData[item] = {}
             elseif search == 2 then
@@ -199,6 +200,7 @@ end
 ---@return SlotWithItem?
 function Inventory.GetSlotWithItem(itemName, metadata, strict)
     local inventory = PlayerData.inventory
+    print('itemName', itemName)
     local item = Items(itemName) --[[@as OxClientItem?]]
 
     if not inventory or not item then return end
@@ -220,6 +222,7 @@ exports('GetSlotWithItem', Inventory.GetSlotWithItem)
 ---@param strict? boolean Strictly match metadata properties, otherwise use partial matching.
 ---@return number?
 function Inventory.GetSlotIdWithItem(itemName, metadata, strict)
+    print('GetSlotIdWithItem', itemName, metadata, strict)
     return Inventory.GetSlotWithItem(itemName, metadata, strict)?.slot
 end
 
