@@ -561,7 +561,7 @@ local function useSlot(slot, noAnim)
 				local clipSize = GetMaxAmmoInClip(playerPed, currentWeapon.hash, true)
 				local usingBow = currentWeapon.hash == `WEAPON_BOW` or currentWeapon.hash == `WEAPON_BOW_IMPROVED`
 				if usingBow then clipSize = 5 end --! Test
-				local currentAmmo = GetPedAmmoByType(playerPed, joaat(currentWeapon.metadata?.ammoType))
+				local currentAmmo = currentWeapon.metadata?.ammoType and GetPedAmmoByType(playerPed, joaat(currentWeapon.metadata?.ammoType)) or 0
 				local _, maxAmmo = GetMaxAmmo(playerPed, currentWeapon.hash)
 
 				if maxAmmo < clipSize then clipSize = maxAmmo end
@@ -575,7 +575,7 @@ local function useSlot(slot, noAnim)
 						clipSize = GetMaxAmmoInClip(playerPed, currentWeapon.hash, true)
 					end
 
-					currentAmmo = GetPedAmmoByType(playerPed, joaat(currentWeapon.metadata?.ammoType))
+					currentAmmo = currentWeapon.metadata?.ammoType and GetPedAmmoByType(playerPed, joaat(currentWeapon.metadata?.ammoType)) or 0
 					local missingAmmo = clipSize - currentAmmo
 					local addAmmo = resp.count > missingAmmo and missingAmmo or resp.count
 					local newAmmo = currentAmmo + addAmmo
@@ -586,7 +586,7 @@ local function useSlot(slot, noAnim)
 					Citizen.InvokeNative(0xCC9C4393523833E2, playerPed, currentWeapon.hash, joaat(resp.name)) --SetAmmoTypeForPedWeapon
 
 					currentWeapon.canFire = true
-					if usingBow then return end
+					-- if usingBow then return end
 
 					Wait(100)
 					MakePedReload(playerPed)
@@ -787,6 +787,7 @@ local function registerCommands()
 	RegisterCommand('reload', function()
 		if not currentWeapon or EnableWeaponWheel or not canUseItem(true) then return end
 		-- print('Reloading?')
+		local isBow = currentWeapon.hash == `WEAPON_BOW` or currentWeapon.hash == `WEAPON_BOW_IMPROVED`
 
 		if currentWeapon.metadata.ammoType then
 			if currentWeapon.metadata.durability > 0 then

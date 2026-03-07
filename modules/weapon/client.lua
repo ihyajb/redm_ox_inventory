@@ -31,7 +31,7 @@ function Weapon.Equip(item, data, noWeaponAnim)
 	-- 	Citizen.InvokeNative(0x1B83C0DEEBCBB214, playerPed) -- Remove All Ped Ammo
 	-- end
 
-	local currentAmmo = GetPedAmmoByType(playerPed, joaat(item.metadata?.ammoType))
+	local currentAmmo = item.metadata?.ammoType and GetPedAmmoByType(playerPed, joaat(item.metadata?.ammoType)) or 0
 	print('Current Ammo', currentAmmo)
 	if item.metadata?.ammoType and item.metadata?.ammo > 0 and currentAmmo ~= item.metadata?.ammo then
 		print('Loaded Ammo :',item.metadata?.ammo or 0)
